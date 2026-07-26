@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "nombreEvento": "Congreso de Tecnología e Innovación 2026",
+    "fecha": "2026-09-15",
+    "lugar": "Centro de Convenciones Metropolitano",
+    "organizador": "Asociación de Tecnología Aplicada",
+    "estado": "Planificado"
+  },
+  {
+    "id": 2,
+    "nombreEvento": "Seminario de Protocolo y Ceremonial de Estado",
+    "fecha": "2026-10-05",
+    "lugar": "Salón Real del Hotel Continental",
+    "organizador": "Instituto de Relaciones Públicas",
+    "estado": "En curso"
+  },
+  {
+    "id": 3,
+    "nombreEvento": "Cumbre de Sostenibilidad y Medio Ambiente",
+    "fecha": "2026-11-20",
+    "lugar": "Auditorio Verde de la Universidad de Ciencias",
+    "organizador": "Fundación Planeta Vivo",
+    "estado": "Planificado"
+  },
+  {
+    "id": 4,
+    "nombreEvento": "Foro Internacional de Marketing Digital",
+    "fecha": "2026-08-12",
+    "lugar": "Centro Cultural Alianza",
+    "organizador": "Agencia Integra Media",
+    "estado": "Completado"
+  },
+  {
+    "id": 5,
+    "nombreEvento": "Festival de Emprendimiento y Startup Hub",
+    "fecha": "2026-12-01",
+    "lugar": "Plaza Central de la Innovación",
+    "organizador": "Coordinadora de Jóvenes Emprendedores",
+    "estado": "Planificado"
+  }
+]
