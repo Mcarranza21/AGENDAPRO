@@ -1,7 +1,8 @@
 # AgendaPro — Brand Brief
 
 ## What it is
-AgendaPro is a simple appointment-booking platform for independent professionals and service-based businesses. Customers come here to explore available services, check prices and book an appointment quickly.
+## What it is
+AgendaPro is a web application for event organizers and protocol staff who need to create structured event agendas quickly and accurately. Users create an event, add activities with their time and responsible person, organize the agenda, and publish or synchronize it with Google Calendar.
 
 ## Palette
 - Primary: #16324F
