@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Consulta la información y las actividades de un evento en AgendaPro.">
+  <title>Detalle del evento | AgendaPro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --ap-primary: #16324f;
+      --ap-accent: #087e8b;
+      --ap-background: #f7f9fc;
+      --ap-surface: #ffffff;
+      --ap-muted: #64748b;
+      --ap-border: #dce5ee;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--ap-background);
+      color: var(--ap-primary);
+      font-family: "Inter", sans-serif;
+    }
+
+    h1, h2, h3, .navbar-brand {
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .navbar {
+      background: rgba(247, 249, 252, 0.94);
+      border-bottom: 1px solid rgba(22, 50, 79, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 2.25rem;
+      height: 2.25rem;
+      place-items: center;
+      border-radius: 0.7rem;
+      background: var(--ap-primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .back-link {
+      color: var(--ap-accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: #055d66; }
+
+    .eyebrow {
+      color: var(--ap-accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      max-width: 900px;
+      font-size: clamp(2rem, 5vw, 3.45rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
+    }
+
+    .status-badge {
+      border-radius: 999px;
+      background: #eef2f6;
+      color: #526478;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .status-badge.active {
+      background: rgba(8, 126, 139, 0.11);
+      color: var(--ap-accent);
+    }
+
+    .info-card, .agenda-card {
+      border: 1px solid var(--ap-border);
+      border-radius: 1rem;
+      background: var(--ap-surface);
+      box-shadow: 0 0.3rem 1.25rem rgba(22, 50, 79, 0.045);
+    }
+
+    .info-label {
+      color: var(--ap-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      color: var(--ap-primary);
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .btn-accent {
+      --bs-btn-color: #fff;
+      --bs-btn-bg: var(--ap-accent);
+      --bs-btn-border-color: var(--ap-accent);
+      --bs-btn-hover-color: #fff;
+      --bs-btn-hover-bg: #066d78;
+      --bs-btn-hover-border-color: #066d78;
+      --bs-btn-focus-shadow-rgb: 8, 126, 139;
+      padding: 0.72rem 1rem;
+      font-weight: 700;
+    }
+
+    .activity-row + .activity-row { border-top: 1px solid var(--ap-border); }
+
+    .activity-time {
+      color: var(--ap-accent);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+    }
+
+    .activity-owner {
+      color: var(--ap-muted);
+      font-size: 0.875rem;
+    }
+
+    .empty-state {
+      border: 1px dashed #b8c7d6;
+      border-radius: 0.9rem;
+      background: rgba(247, 249, 252, 0.7);
+    }
+
+    footer {
+      color: var(--ap-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand py-3" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="index.html" aria-label="AgendaPro, inicio">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="fw-bold" style="color: var(--ap-primary);">Agenda<span style="color: var(--ap-accent);">Pro</span></span>
+      </a>
+      <span class="d-none d-sm-inline text-secondary small">Organiza con claridad</span>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container py-4 py-md-5">
+      <a class="back-link d-inline-flex align-items-center gap-2 mb-4" href="index.html">← Volver a eventos</a>
+
+      <div id="eventContent" aria-live="polite" aria-busy="true">
+        <header class="mb-4 mb-md-5">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <p class="eyebrow mb-0">Detalle del evento</p>
+            <span class="status-badge px-2 py-1 d-none" id="eventStatus"></span>
+          </div>
+          <h1 class="page-title mb-0" id="eventName">Cargando evento…</h1>
+        </header>
+
+        <section class="info-card p-4 mb-4" aria-label="Información general del evento">
+          <div class="row g-4">
+            <div class="col-12 col-md-4">
+              <p class="info-label mb-1">Fecha</p>
+              <p class="info-value mb-0" id="eventDate">—</p>
+            </div>
+            <div class="col-12 col-md-4">
+              <p class="info-label mb-1">Horario general</p>
+              <p class="info-value mb-0" id="eventSchedule">Por definir</p>
+            </div>
+            <div class="col-12 col-md-4">
+              <p class="info-label mb-1">Lugar</p>
+              <p class="info-value mb-0" id="eventLocation">—</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="agenda-card p-4 p-md-5" aria-labelledby="agendaTitle">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+            <div>
+              <p class="eyebrow mb-2">Agenda</p>
+              <h2 class="section-title mb-0" id="agendaTitle">Actividades</h2>
+            </div>
+            <button class="btn btn-accent rounded-3" type="button" data-bs-toggle="modal" data-bs-target="#activityModal">+ Agregar actividad</button>
+          </div>
+
+          <div id="activitiesList"></div>
+          <div class="empty-state p-4 text-center" id="activitiesEmpty">
+            <h3 class="h5 mb-2">Este evento todavía no tiene actividades</h3>
+            <p class="text-secondary mb-0">Agrega la primera actividad para comenzar a organizar la agenda.</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="empty-state p-4 p-md-5 text-center d-none" id="eventError" aria-live="polite">
+        <h1 class="h4 mb-2">No encontramos este evento</h1>
+        <p class="text-secondary mb-3">Vuelve a la lista y selecciona un evento existente.</p>
+        <a class="back-link" href="index.html">Volver a eventos</a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="py-4 border-top">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between gap-2">
+      <span>AgendaPro · Planificación de eventos</span>
+      <span>Agendas precisas, equipos coordinados.</span>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <form id="activityForm">
+          <div class="modal-header border-0 px-4 pt-4 pb-2">
+            <div>
+              <p class="eyebrow mb-2">Nueva actividad</p>
+              <h2 class="modal-title h4" id="activityModalTitle">Agregar a la agenda</h2>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body px-4 py-3">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="activityTime">Hora</label>
+              <input class="form-control" id="activityTime" name="hora" type="time" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="activityDescription">Actividad</label>
+              <input class="form-control" id="activityDescription" name="descripcion" type="text" maxlength="100" required>
+            </div>
+            <div>
+              <label class="form-label fw-semibold" for="activityOwner">Responsable</label>
+              <input class="form-control" id="activityOwner" name="responsable" type="text" maxlength="80" required>
+            </div>
+          </div>
+          <div class="modal-footer border-0 px-4 pb-4 pt-2">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-accent rounded-3">Agregar actividad</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const eventContent = document.querySelector('#eventContent');
+    const eventError = document.querySelector('#eventError');
+    const activitiesList = document.querySelector('#activitiesList');
+    const activitiesEmpty = document.querySelector('#activitiesEmpty');
+    const eventId = new URLSearchParams(window.location.search).get('id');
+    const dateFormatter = new Intl.DateTimeFormat('es-GT', {
+      day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+    });
+
+    function showEventError() {
+      eventContent.classList.add('d-none');
+      eventError.classList.remove('d-none');
+    }
+
+    function createActivityRow(activity) {
+      activitiesEmpty.classList.add('d-none');
+      const row = document.createElement('article');
+      row.className = 'activity-row d-flex flex-column flex-md-row gap-2 gap-md-4 py-3';
+
+      const time = document.createElement('p');
+      time.className = 'activity-time mb-0';
+      time.textContent = activity.hora;
+
+      const body = document.createElement('div');
+      const title = document.createElement('h3');
+      title.className = 'h6 mb-1';
+      title.textContent = activity.descripcion;
+      const owner = document.createElement('p');
+      owner.className = 'activity-owner mb-0';
+      owner.textContent = `Responsable: ${activity.responsable}`;
+      body.append(title, owner);
+      row.append(time, body);
+      activitiesList.append(row);
+    }
+
+    function renderActivities(activities) {
+      if (!Array.isArray(activities) || activities.length === 0) return;
+      activities.forEach(createActivityRow);
+    }
+
+    async function loadEvent() {
+      if (!eventId) {
+        showEventError();
+        return;
+      }
+
+      try {
+        const response = await fetch('data/events.json');
+        if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
+        const events = await response.json();
+        const event = events.find(item => String(item.id) === eventId);
+        if (!event) {
+          showEventError();
+          return;
+        }
+
+        const date = new Date(`${event.fecha}T00:00:00Z`);
+        document.querySelector('#eventName').textContent = event.nombreEvento;
+        document.querySelector('#eventDate').textContent = dateFormatter.format(date);
+        document.querySelector('#eventLocation').textContent = event.lugar || 'Por definir';
+        document.querySelector('#eventSchedule').textContent = event.horarioGeneral || 'Por definir';
+
+        const status = document.querySelector('#eventStatus');
+        status.textContent = event.estado;
+        status.classList.remove('d-none');
+        if (event.estado === 'En curso') status.classList.add('active');
+        renderActivities(event.actividades);
+      } catch (error) {
+        showEventError();
+      } finally {
+        eventContent.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    document.querySelector('#activityForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      createActivityRow({
+        hora: formData.get('hora'),
+        descripcion: formData.get('descripcion'),
+        responsable: formData.get('responsable')
+      });
+      bootstrap.Modal.getOrCreateInstance(document.querySelector('#activityModal')).hide();
+      event.currentTarget.reset();
+    });
+
+    loadEvent();
+  </script>
+</body>
+</html>

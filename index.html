@@ -241,8 +241,8 @@
         <div class="row g-4" id="eventsList" aria-live="polite" aria-busy="true"></div>
 
         <div class="empty-state p-4 p-md-5 text-center d-none" id="emptyState">
-          <h3 class="h5 mb-2">Aún no tienes eventos</h3>
-          <p class="text-secondary mb-0">Crea tu primer evento para comenzar a construir su agenda.</p>
+          <h3 class="h5 mb-2">Todavía no tienes eventos</h3>
+          <p class="text-secondary mb-0">Crea tu primer evento para comenzar.</p>
         </div>
       </div>
     </section>
@@ -321,12 +321,11 @@
       const location = document.createElement('p');
       location.className = 'mb-3';
       location.textContent = event.lugar;
-      const link = document.createElement('button');
-      link.className = 'event-link btn btn-link p-0 border-0';
-      link.type = 'button';
+      const link = document.createElement('a');
+      link.className = 'event-link';
+      link.href = `detalle-evento.html?id=${encodeURIComponent(event.id)}`;
       link.textContent = 'Ver evento →';
       link.setAttribute('aria-label', `Ver evento: ${event.nombreEvento}`);
-      link.addEventListener('click', () => showMessage(`Seleccionaste “${event.nombreEvento}”.`));
       details.append(fullDate, location, link);
 
       card.append(top, details);
