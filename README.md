@@ -15,3 +15,9 @@
 | Crear y editar agendas | Must |
 | Organizar actividades y responsables | Must |
 | Sincronizar con Google Calendar | Must |
+
+## Documentación
+
+- [Requisitos del producto](docs/PRD.md)
+- [Requisitos funcionales](docs/FRD.md)
+- [Brand brief](docs/BRAND.md)
