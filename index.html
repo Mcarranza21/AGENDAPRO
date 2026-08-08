@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AgendaPro ayuda a organizadores y equipos de protocolo a crear y coordinar agendas de eventos.">
+  <title>Inicio | AgendaPro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --ap-primary: #16324f;
+      --ap-accent: #087e8b;
+      --ap-background: #f7f9fc;
+      --ap-surface: #ffffff;
+      --ap-muted: #64748b;
+      --ap-border: #dce5ee;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--ap-background);
+      color: var(--ap-primary);
+      font-family: "Inter", sans-serif;
+    }
+
+    h1, h2, h3, .navbar-brand {
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .navbar {
+      background: rgba(247, 249, 252, 0.94);
+      border-bottom: 1px solid rgba(22, 50, 79, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 2.25rem;
+      height: 2.25rem;
+      place-items: center;
+      border-radius: 0.7rem;
+      background: var(--ap-primary);
+      color: white;
+      font-weight: 700;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 4.75rem 0 4rem;
+    }
+
+    .hero::after {
+      position: absolute;
+      z-index: -1;
+      top: -9rem;
+      right: -6rem;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(8, 126, 139, 0.14), rgba(8, 126, 139, 0));
+      content: "";
+    }
+
+    .eyebrow {
+      color: var(--ap-accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 760px;
+      font-size: clamp(2.35rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      color: var(--ap-muted);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.75;
+    }
+
+    .btn-accent {
+      --bs-btn-color: #fff;
+      --bs-btn-bg: var(--ap-accent);
+      --bs-btn-border-color: var(--ap-accent);
+      --bs-btn-hover-color: #fff;
+      --bs-btn-hover-bg: #066d78;
+      --bs-btn-hover-border-color: #066d78;
+      --bs-btn-focus-shadow-rgb: 8, 126, 139;
+      padding: 0.8rem 1.2rem;
+      font-weight: 700;
+    }
+
+    .plus-icon {
+      font-size: 1.35rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .section-title {
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .event-card {
+      height: 100%;
+      border: 1px solid var(--ap-border);
+      border-radius: 1rem;
+      background: var(--ap-surface);
+      box-shadow: 0 0.3rem 1.25rem rgba(22, 50, 79, 0.045);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(8, 126, 139, 0.45);
+      box-shadow: 0 0.9rem 2rem rgba(22, 50, 79, 0.09);
+    }
+
+    .event-date {
+      min-width: 3.7rem;
+      border-radius: 0.8rem;
+      background: rgba(8, 126, 139, 0.1);
+      color: var(--ap-accent);
+      text-align: center;
+    }
+
+    .event-date strong {
+      display: block;
+      font-family: "Montserrat", sans-serif;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .event-date span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .event-title {
+      color: var(--ap-primary);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .event-meta {
+      color: var(--ap-muted);
+      font-size: 0.875rem;
+    }
+
+    .status-badge {
+      border-radius: 999px;
+      background: #eef2f6;
+      color: #526478;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .status-badge.active {
+      background: rgba(8, 126, 139, 0.11);
+      color: var(--ap-accent);
+    }
+
+    .event-link {
+      color: var(--ap-accent);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .event-link:hover { color: #055d66; }
+
+    .empty-state {
+      border: 1px dashed #b8c7d6;
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    footer {
+      color: var(--ap-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 575.98px) {
+      .hero { padding: 3.5rem 0 3rem; }
+      .hero h1 { font-size: 2.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand py-3" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="#inicio" aria-label="AgendaPro, inicio">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="fw-bold" style="color: var(--ap-primary);">Agenda<span style="color: var(--ap-accent);">Pro</span></span>
+      </a>
+      <span class="d-none d-sm-inline text-secondary small">Organiza con claridad</span>
+    </div>
+  </nav>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow mb-3">Tu espacio de organización</p>
+        <h1 class="mb-4">Cada momento de tu evento, en orden.</h1>
+        <p class="hero-copy mb-4">
+          Crea agendas claras, asigna responsables y mantén a tu equipo coordinado desde la primera actividad hasta el cierre.
+        </p>
+        <button class="btn btn-accent d-inline-flex align-items-center gap-2 rounded-3" type="button" id="createEventButton">
+          <span class="plus-icon" aria-hidden="true">+</span>
+          Crear nuevo evento
+        </button>
+      </div>
+    </section>
+
+    <section class="pb-5" aria-labelledby="eventsTitle">
+      <div class="container">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-4">
+          <div>
+            <p class="eyebrow mb-2">Vista general</p>
+            <h2 class="section-title mb-0" id="eventsTitle">Tus eventos</h2>
+          </div>
+          <p class="text-secondary small mb-0" id="eventCount" aria-live="polite">Cargando eventos…</p>
+        </div>
+
+        <div class="row g-4" id="eventsList" aria-live="polite" aria-busy="true"></div>
+
+        <div class="empty-state p-4 p-md-5 text-center d-none" id="emptyState">
+          <h3 class="h5 mb-2">Aún no tienes eventos</h3>
+          <p class="text-secondary mb-0">Crea tu primer evento para comenzar a construir su agenda.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-4 border-top">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between gap-2">
+      <span>AgendaPro · Planificación de eventos</span>
+      <span>Agendas precisas, equipos coordinados.</span>
+    </div>
+  </footer>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast border-0 shadow" id="actionToast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="toast-body d-flex align-items-center justify-content-between gap-3">
+        <span id="toastMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const eventsList = document.querySelector('#eventsList');
+    const emptyState = document.querySelector('#emptyState');
+    const eventCount = document.querySelector('#eventCount');
+    const toastElement = document.querySelector('#actionToast');
+    const toastMessage = document.querySelector('#toastMessage');
+    const actionToast = new bootstrap.Toast(toastElement, { delay: 3200 });
+
+    const monthFormatter = new Intl.DateTimeFormat('es-GT', { month: 'short', timeZone: 'UTC' });
+    const longDateFormatter = new Intl.DateTimeFormat('es-GT', {
+      day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+    });
+
+    function showMessage(message) {
+      toastMessage.textContent = message;
+      actionToast.show();
+    }
+
+    function createEventCard(event) {
+      const date = new Date(`${event.fecha}T00:00:00Z`);
+      const column = document.createElement('div');
+      column.className = 'col-12 col-md-6 col-xl-4';
+
+      const card = document.createElement('article');
+      card.className = 'event-card p-4 d-flex flex-column';
+
+      const top = document.createElement('div');
+      top.className = 'd-flex align-items-start gap-3 mb-4';
+
+      const dateBlock = document.createElement('div');
+      dateBlock.className = 'event-date p-2';
+      const day = document.createElement('strong');
+      day.textContent = String(date.getUTCDate()).padStart(2, '0');
+      const month = document.createElement('span');
+      month.textContent = monthFormatter.format(date).replace('.', '');
+      dateBlock.append(day, month);
+
+      const summary = document.createElement('div');
+      summary.className = 'flex-grow-1';
+      const status = document.createElement('span');
+      status.className = `status-badge d-inline-block px-2 py-1 mb-2${event.estado === 'En curso' ? ' active' : ''}`;
+      status.textContent = event.estado;
+      const title = document.createElement('h3');
+      title.className = 'event-title mb-0';
+      title.textContent = event.nombreEvento;
+      summary.append(status, title);
+      top.append(dateBlock, summary);
+
+      const details = document.createElement('div');
+      details.className = 'event-meta mt-auto';
+      const fullDate = document.createElement('p');
+      fullDate.className = 'mb-2';
+      fullDate.textContent = longDateFormatter.format(date);
+      const location = document.createElement('p');
+      location.className = 'mb-3';
+      location.textContent = event.lugar;
+      const link = document.createElement('button');
+      link.className = 'event-link btn btn-link p-0 border-0';
+      link.type = 'button';
+      link.textContent = 'Ver evento →';
+      link.setAttribute('aria-label', `Ver evento: ${event.nombreEvento}`);
+      link.addEventListener('click', () => showMessage(`Seleccionaste “${event.nombreEvento}”.`));
+      details.append(fullDate, location, link);
+
+      card.append(top, details);
+      column.append(card);
+      return column;
+    }
+
+    async function loadEvents() {
+      try {
+        const response = await fetch('data/events.json');
+        if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
+        const events = await response.json();
+
+        if (!Array.isArray(events) || events.length === 0) {
+          emptyState.classList.remove('d-none');
+          eventCount.textContent = '0 eventos';
+          return;
+        }
+
+        events
+          .slice()
+          .sort((a, b) => a.fecha.localeCompare(b.fecha))
+          .forEach(event => eventsList.append(createEventCard(event)));
+        eventCount.textContent = `${events.length} ${events.length === 1 ? 'evento' : 'eventos'}`;
+      } catch (error) {
+        emptyState.classList.remove('d-none');
+        emptyState.querySelector('h3').textContent = 'No pudimos cargar tus eventos';
+        emptyState.querySelector('p').textContent = 'Intenta abrir AgendaPro desde un servidor local.';
+        eventCount.textContent = 'Eventos no disponibles';
+      } finally {
+        eventsList.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    document.querySelector('#createEventButton').addEventListener('click', () => {
+      showMessage('Listo para crear un nuevo evento.');
+    });
+
+    loadEvents();
+  </script>
+</body>
+</html>

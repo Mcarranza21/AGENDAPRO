@@ -6,7 +6,7 @@ AgendaPro is a web application for event organizers and protocol staff who need 
 
 ## Palette
 - Primary: #16324F
-- Accent: #2EC4B6 — used for prices, availability indicators and the main booking button
+- - Accent: #087E8B — use for primary actions, highlighted times, active states and important agenda information.
 - Background: #F7F9FC
 
 ## Fonts
