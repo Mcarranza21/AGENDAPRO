@@ -17,7 +17,6 @@ AgendaPro is a web application for event organizers and protocol staff who need 
 Professional, welcoming, efficient. Not this: corporate, complicated or visually overwhelming.
 
 ## Screens
-- ## Screens
 - Inicio (home)
 - Detalles del Evento
 - Constructor de Agenda
