@@ -25,27 +25,39 @@ Permitir al usuario crear un nuevo evento o acceder a uno existente.
 
 ---
 
-# Pantalla 2 – Detalles del Evento
+# Pantalla 2 – Detalle del Evento
 
 ## Propósito
-Registrar la información básica del evento.
+Permitir al usuario consultar la información general de un evento y administrar las actividades que forman parte de su agenda.
 
 ### Lo que el usuario ve
-- Campos: Nombre del evento, Fecha y Lugar.
-- Botones **Guardar** y **Continuar**.
+- Nombre del evento.
+- Estado del evento.
+- Fecha.
+- Horario general.
+- Lugar.
+- Sección de actividades de la agenda.
+- Botón **"Agregar actividad"**.
+- Opción **"Volver a eventos"**.
+- Mensaje informativo cuando el evento todavía no tiene actividades.
 
 ### Lo que el usuario hace
-- Ingresa la información y guarda el evento.
+- Consulta la información general del evento.
+- Revisa las actividades que forman parte de la agenda.
+- Selecciona **"Agregar actividad"** para incorporar una nueva actividad.
+- Selecciona **"Volver a eventos"** para regresar a la pantalla de Inicio.
 
 ### Datos de entrada
-- Nombre del evento.
-- Fecha.
-- Lugar.
+- Evento seleccionado desde la pantalla de Inicio.
+- Información de una nueva actividad cuando el usuario decide agregarla.
 
 ### Datos de salida
-- El evento queda registrado.
-- Se muestra un mensaje de confirmación.
-- Se habilita la creación de la agenda.
+- Se muestra la información correspondiente al evento seleccionado.
+- Se muestran las actividades asociadas al evento.
+- Si el evento no tiene actividades, se muestra el mensaje:
+  > Este evento todavía no tiene actividades. Agrega la primera actividad para comenzar a organizar la agenda.
+- Al agregar una actividad, esta se incorpora a la agenda mostrada.
+- Al seleccionar **"Volver a eventos"**, el usuario regresa a la pantalla de Inicio.
 
 ---
 
