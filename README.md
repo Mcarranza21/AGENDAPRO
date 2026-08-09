@@ -21,3 +21,9 @@
 - [Requisitos del producto](docs/PRD.md)
 - [Requisitos funcionales](docs/FRD.md)
 - [Brand brief](docs/BRAND.md)
+
+## Prototipo en vivo
+
+Puedes acceder al prototipo funcional de AgendaPro en:
+
+https://mcarranza21.github.io/AGENDAPRO/
