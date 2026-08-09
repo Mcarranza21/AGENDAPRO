@@ -152,7 +152,7 @@
 <body>
   <nav class="navbar navbar-expand py-3" aria-label="Navegación principal">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="index.html" aria-label="AgendaPro, inicio">
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="./index.html" aria-label="AgendaPro, inicio">
         <span class="brand-mark" aria-hidden="true">A</span>
         <span class="fw-bold" style="color: var(--ap-primary);">Agenda<span style="color: var(--ap-accent);">Pro</span></span>
       </a>
@@ -162,7 +162,7 @@
 
   <main>
     <div class="container py-4 py-md-5">
-      <a class="back-link d-inline-flex align-items-center gap-2 mb-4" href="index.html">← Volver a eventos</a>
+      <a class="back-link d-inline-flex align-items-center gap-2 mb-4" href="./index.html">← Volver a eventos</a>
 
       <div id="eventContent" aria-live="polite" aria-busy="true">
         <header class="mb-4 mb-md-5">
@@ -210,7 +210,7 @@
       <section class="empty-state p-4 p-md-5 text-center d-none" id="eventError" aria-live="polite">
         <h1 class="h4 mb-2">No encontramos este evento</h1>
         <p class="text-secondary mb-3">Vuelve a la lista y selecciona un evento existente.</p>
-        <a class="back-link" href="index.html">Volver a eventos</a>
+        <a class="back-link" href="./index.html">Volver a eventos</a>
       </section>
     </div>
   </main>
@@ -305,7 +305,7 @@
       }
 
       try {
-        const response = await fetch('data/events.json');
+        const response = await fetch('./data/EVENTS.json');
         if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
         const events = await response.json();
         const event = events.find(item => String(item.id) === eventId);

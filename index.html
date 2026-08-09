@@ -323,7 +323,7 @@
       location.textContent = event.lugar;
       const link = document.createElement('a');
       link.className = 'event-link';
-      link.href = `detalle-evento.html?id=${encodeURIComponent(event.id)}`;
+      link.href = `./detalle-evento.html?id=${encodeURIComponent(event.id)}`;
       link.textContent = 'Ver evento →';
       link.setAttribute('aria-label', `Ver evento: ${event.nombreEvento}`);
       details.append(fullDate, location, link);
@@ -335,7 +335,7 @@
 
     async function loadEvents() {
       try {
-        const response = await fetch('data/events.json');
+        const response = await fetch('./data/EVENTS.json');
         if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
         const events = await response.json();
 
