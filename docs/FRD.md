@@ -6,6 +6,8 @@
 
 # Pantalla 1 – Inicio
 
+**Estado de implementación:** Implementada
+
 ## Propósito
 Permitir al usuario crear un nuevo evento o acceder a uno existente.
 
@@ -26,6 +28,8 @@ Permitir al usuario crear un nuevo evento o acceder a uno existente.
 ---
 
 # Pantalla 2 – Detalle del Evento
+
+**Estado de implementación:** Implementada
 
 ## Propósito
 Permitir al usuario consultar la información general de un evento y administrar las actividades que forman parte de su agenda.
@@ -63,6 +67,8 @@ Permitir al usuario consultar la información general de un evento y administrar
 
 # Pantalla 3 – Constructor de Agenda
 
+**Estado de implementación:** No implementada
+
 ## Propósito
 Crear y administrar las actividades del evento.
 
@@ -86,6 +92,8 @@ Crear y administrar las actividades del evento.
 ---
 
 # Pantalla 4 – Sincronización con Google Calendar
+
+**Estado de implementación:** No implementada
 
 ## Propósito
 Permitir al usuario publicar la agenda del evento y sincronizarla con Google Calendar.
