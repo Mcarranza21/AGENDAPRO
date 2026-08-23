@@ -1,149 +1,94 @@
 # Documento de Requisitos Funcionales (FRD)
 
-## Funcionalidad: Crear y gestionar una agenda de eventos
+## AgendaPro - versión implementada para Delivery 3
 
----
+AgendaPro es un producto web para organizadores y equipos de protocolo que necesitan consultar eventos, revisar sus actividades y registrar un nuevo evento. Esta versión conserva un alcance deliberadamente simple: HTML, CSS y JavaScript sin framework, datos de demostración en un archivo JSON y un formulario que escribe en una sola tabla de Supabase.
 
-# Pantalla 1 – Inicio
+## Pantalla 1 - Inicio
 
-**Estado de implementación:** Implementada
+**Estado:** Implementada.
 
-## Propósito
-Permitir al usuario crear un nuevo evento o acceder a uno existente.
+**Propósito:** servir como punto de entrada y ofrecer acceso directo a los eventos y al formulario de creación.
 
-### Lo que el usuario ve
-- Botón **"Crear nuevo evento"**.
-- Lista de eventos existentes (si los hay).
+**Contenido y acciones:**
 
-### Lo que el usuario hace
-- Selecciona **"Crear nuevo evento"** o un evento existente.
+- Identidad de AgendaPro, mensaje principal e ilustración local.
+- Lista de eventos cargada desde `data/EVENTS.json`.
+- Tarjetas con fecha, estado, nombre y lugar.
+- Enlace **Ver evento** hacia la pantalla Detalle del evento.
+- Botón **Crear nuevo evento** hacia la pantalla Crear evento.
+- Mensajes para estado vacío o error de carga.
 
-### Datos de entrada
-- Selección del botón o del evento.
+## Pantalla 2 - Detalle del evento
 
-### Datos de salida
-- Se abre la pantalla de detalles del evento.
-- Se muestra la información del evento seleccionado.
+**Estado:** Implementada.
 
----
+**Propósito:** consultar un evento y visualizar las actividades de su agenda.
 
-# Pantalla 2 – Detalle del Evento
+**Contenido y acciones:**
 
-**Estado de implementación:** Implementada
+- Nombre, estado, fecha, horario general y lugar del evento seleccionado.
+- Lista de actividades con hora, descripción y responsable, cuando existan.
+- Estado vacío cuando todavía no hay actividades.
+- Botón **Agregar actividad**, que guarda la actividad en el almacenamiento local del navegador para conservarla al recargar la página. Esta acción no escribe en Supabase y no forma parte del formulario evaluado para la base de datos.
+- Enlace **Volver a eventos** hacia Inicio.
+- Estado de error si falta el identificador o no existe el evento solicitado.
 
-## Propósito
-Permitir al usuario consultar la información general de un evento y administrar las actividades que forman parte de su agenda.
+## Pantalla 3 - Crear evento
 
-### Lo que el usuario ve
-- Nombre del evento.
-- Estado del evento.
-- Fecha.
-- Horario general.
-- Lugar.
-- Sección de actividades de la agenda.
-- Botón **"Agregar actividad"**.
-- Opción **"Volver a eventos"**.
-- Mensaje informativo cuando el evento todavía no tiene actividades.
+**Estado:** Implementada y conectada a Supabase.
 
-### Lo que el usuario hace
-- Consulta la información general del evento.
-- Revisa las actividades que forman parte de la agenda.
-- Selecciona **"Agregar actividad"** para incorporar una nueva actividad.
-- Selecciona **"Volver a eventos"** para regresar a la pantalla de Inicio.
+**Propósito:** recopilar la información mínima de un nuevo evento y guardarla en la tabla `eventos`.
 
-### Datos de entrada
-- Evento seleccionado desde la pantalla de Inicio.
-- Información de una nueva actividad cuando el usuario decide agregarla.
+**Campos obligatorios:**
 
-### Datos de salida
-- Se muestra la información correspondiente al evento seleccionado.
-- Se muestran las actividades asociadas al evento.
-- Si el evento no tiene actividades, se muestra el mensaje:
-  > Este evento todavía no tiene actividades. Agrega la primera actividad para comenzar a organizar la agenda.
-- Al agregar una actividad, esta se incorpora a la agenda mostrada.
-- Al seleccionar **"Volver a eventos"**, el usuario regresa a la pantalla de Inicio.
+- `nombre_evento`
+- `fecha_evento`
+- `lugar_evento`
+- `nombre_responsable`
+- `telefono_responsable`
 
----
+**Comportamiento:**
 
-# Pantalla 3 – Constructor de Agenda
+1. El usuario accede desde el botón **Crear nuevo evento** en Inicio.
+2. El navegador valida que todos los campos estén completos.
+3. Al enviar, el botón cambia a estado de espera y se inserta una fila en `eventos` mediante el cliente público de Supabase.
+4. Si la inserción funciona, el formulario se limpia y muestra una confirmación.
+5. Si ocurre un error, se muestra el mensaje devuelto por el servicio y el usuario puede intentarlo nuevamente.
+6. El enlace **Volver a eventos** regresa a Inicio.
 
-**Estado de implementación:** No implementada
+## Navegación implementada
 
-## Propósito
-Crear y administrar las actividades del evento.
+| Origen | Acción | Destino | Regreso |
+|---|---|---|---|
+| Inicio | Ver evento | Detalle del evento | Volver a eventos |
+| Inicio | Crear nuevo evento | Crear evento | Volver a eventos |
 
-### Lo que el usuario ve
-- Lista de actividades.
-- Botón **Agregar actividad**.
-- Opciones para editar y eliminar.
+## Datos e integraciones
 
-### Lo que el usuario hace
-- Agrega, edita o elimina actividades.
+- **Lectura:** `data/EVENTS.json`, usado únicamente para mostrar los eventos de demostración.
+- **Escritura:** una fila por envío en la tabla `eventos` de Supabase.
+- **Actividades del detalle:** se guardan por identificador de evento en `localStorage`, bajo la clave `agendapro.activities.v1`.
+- **Permisos esperados:** inserción pública habilitada para la tabla; no se requiere lectura pública desde el producto.
+- **Despliegue requerido:** Vercel. La URL debe registrarse en `README.md` y en el resumen cuando haya sido confirmada.
 
-### Datos de entrada
-- Hora.
-- Descripción de la actividad.
-- Responsable.
+## Estados y casos límite
 
-### Datos de salida
-- La agenda se actualiza en orden cronológico.
-- Las actividades quedan almacenadas.
+- Si el JSON no carga, Inicio muestra un mensaje claro sin romper la interfaz.
+- Si el detalle no recibe un `id` válido, muestra un estado de evento no encontrado.
+- Si Supabase rechaza la inserción o no hay conexión, el formulario informa el error y recupera el botón.
+- Los campos obligatorios evitan envíos incompletos desde el navegador.
 
----
+## Fuera del alcance de Delivery 3
 
-# Pantalla 4 – Sincronización con Google Calendar
+- Autenticación y cuentas de usuario.
+- Segunda tabla o backend propio.
+- Sincronización de actividades entre navegadores o dispositivos; el almacenamiento de actividades es local a cada navegador.
+- Edición o eliminación de eventos.
+- Sincronización con Google Calendar.
+- Chatbot.
 
-**Estado de implementación:** No implementada
+## Evidencia pendiente de confirmación
 
-## Propósito
-Permitir al usuario publicar la agenda del evento y sincronizarla con Google Calendar.
-
-### Lo que el usuario ve
-- Vista previa de la agenda.
-- Botón **"Sincronizar con Google Calendar"**.
-- Mensaje de confirmación cuando la sincronización sea exitosa.
-
-### Lo que el usuario hace
-- Revisa la agenda.
-- Selecciona **"Sincronizar con Google Calendar"**.
-- Autoriza el acceso a su cuenta de Google (la primera vez).
-
-### Datos de entrada
-- Agenda del evento.
-- Cuenta de Google autorizada por el usuario.
-
-### Datos de salida
-- La agenda queda publicada en Google Calendar.
-- Se muestra un mensaje confirmando que la sincronización fue realizada correctamente.
-
----
-
-# Casos límite (Edge Cases)
-
-## 1. No hay conexión a Internet
-
-**Respuesta del sistema:**
-La sincronización se cancela.
-
-**Mensaje al usuario:**
-> No fue posible sincronizar la agenda. Verifique su conexión a Internet e intente nuevamente.
-
----
-
-## 2. Permisos denegados
-
-**Respuesta del sistema:**
-No se puede acceder a Google Calendar.
-
-**Mensaje al usuario:**
-> Debe autorizar el acceso a Google Calendar para sincronizar la agenda.
-
----
-
-## 3. Error al conectar con Google Calendar
-
-**Respuesta del sistema:**
-La agenda no se publica.
-
-**Mensaje al usuario:**
-> Ocurrió un error durante la sincronización. Intente nuevamente más tarde.
+- URL pública definitiva de Vercel probada en una ventana privada.
+- Captura de la tabla `eventos` con al menos una fila creada desde el formulario y la fecha visible.
