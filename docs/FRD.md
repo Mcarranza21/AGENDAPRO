@@ -88,7 +88,7 @@ AgendaPro es un producto web para organizadores y equipos de protocolo que neces
 - Sincronización con Google Calendar.
 - Chatbot.
 
-## Evidencia pendiente de confirmación
+## Evidencia y confirmaciones finales
 
-- URL pública definitiva de Vercel probada en una ventana privada.
-- Captura de la tabla `eventos` con al menos una fila creada desde el formulario y la fecha visible.
+- El resumen de Delivery 3 incluye una captura de la tabla `eventos` con filas registradas y la columna `created_at` visible.
+- La dirección de Vercel debe probarse en una ventana privada para confirmar que no solicita inicio de sesión.

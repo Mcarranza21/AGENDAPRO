@@ -24,11 +24,9 @@
 
 ## Prototipo en vivo
 
-Dirección pública actualmente disponible:
+Dirección de Vercel:
 
-https://mcarranza21.github.io/AGENDAPRO/
-
-> **Pendiente de Delivery 3:** sustituir la dirección anterior por la URL definitiva de Vercel en cuanto el despliegue esté confirmado y probado en una ventana privada. No se incluye una URL de Vercel sin verificar.
+https://agendapro-mo3r2u04z-mcarranza21s-projects.vercel.app/
 
 ## Pantallas implementadas
 
@@ -45,4 +43,4 @@ https://mcarranza21.github.io/AGENDAPRO/
 - Formulario conectado a una única tabla de Supabase.
 - Actividades del detalle guardadas por evento en `localStorage`, por lo que permanecen después de recargar en el mismo navegador.
 
-Antes de entregar: confirmar la URL de Vercel, probar el recorrido completo en una ventana privada y añadir al resumen PDF una captura de Supabase con una fila creada desde el formulario y la fecha visible.
+Antes de entregar: abrir la URL de Vercel en una ventana privada para confirmar que no solicita inicio de sesión y comprobar que el instructor conserva acceso al repositorio. El resumen PDF ya incluye evidencia de Supabase con filas registradas y la fecha visible.
