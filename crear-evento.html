@@ -301,14 +301,7 @@
     </div>
   </footer>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    const supabase = createClient(
-      'https://ylcekcftspapmjfshxpj.supabase.co',
-      'sb_publishable_S6YdM3K1epNYt61qpVPTIQ_Zwvhj575'
-    );
-
+  <script>
     const eventForm = document.querySelector('#eventForm');
     const submitButton = document.querySelector('#submitButton');
     const formMessage = document.querySelector('#formMessage');
@@ -334,8 +327,21 @@
       };
 
       try {
-        const { error } = await supabase.from('eventos').insert(newEvent);
-        if (error) throw error;
+        const response = await fetch('/api/crear-evento', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newEvent)
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          const errorMessage = typeof result.error === 'string'
+            ? result.error
+            : result.error?.message || 'No se pudo guardar el evento.';
+          throw new Error(errorMessage);
+        }
 
         eventForm.reset();
         showMessage('¡Gracias! Tu evento se guardó correctamente.', 'success');
