@@ -1,46 +1,109 @@
 # AgendaPro
 
-**AgendaPro** ayuda a organizadores de eventos, encargados de protocolo y coordinadores a crear agendas de eventos de forma rápida y ordenada. Busca reducir el trabajo manual y evitar errores al organizar los horarios, las actividades y las personas responsables de cada momento del evento.
+AgendaPro es una aplicación web para crear, organizar y confirmar agendas de
+eventos. Centraliza la información general de cada evento y sus actividades,
+permite revisar el orden del programa y genera un folio al confirmar la agenda.
 
-## The three Musts
+## Público objetivo
 
-- Crear y editar una agenda de evento.
-- Organizar las actividades por horario y responsable.
-- Sincronizar la agenda con Google Calendar.
+- Organizadores de eventos que necesitan estructurar programas con rapidez.
+- Encargados de protocolo que requieren horarios y responsables claros.
+- Coordinadores que necesitan consultar quién está a cargo de cada actividad.
 
-## Core features at a glance
+## Producto público
 
-| Feature | Priority |
-|---|---|
-| Crear y editar agendas | Must |
-| Organizar actividades y responsables | Must |
-| Sincronizar con Google Calendar | Must |
+AgendaPro está disponible en:
+
+<https://agendapro-pearl.vercel.app>
+
+## Flujo principal
+
+```text
+Mis eventos
+→ crear un evento o seleccionar uno existente
+→ agregar actividades
+→ revisar la agenda
+→ confirmar
+→ recibir un folio y un estado
+```
+
+Los eventos utilizan el ID real generado por Supabase. Cada actividad queda
+asociada a su evento y la agenda debe tener al menos una actividad antes de
+poder confirmarse.
+
+## Funciones disponibles
+
+- Consultar los eventos reales guardados en Supabase.
+- Crear un evento con nombre, fecha, lugar, responsable y teléfono.
+- Abrir el detalle de un evento mediante su ID.
+- Agregar actividades con hora, descripción y responsable.
+- Mostrar las actividades ordenadas por hora.
+- Revisar y confirmar una agenda.
+- Generar un folio único con un formato como `AGP-2026-0001`.
+- Guardar el estado y la fecha/hora de confirmación.
+- Mostrar una pantalla final con el folio, el estado y el resumen del evento.
+- Consultar un chatbot grounded sobre el uso y las funciones actuales de
+  AgendaPro.
+
+## Arquitectura actual
+
+El frontend utiliza HTML, CSS y JavaScript simples, con Bootstrap 5 cargado
+desde CDN. No requiere framework, npm ni proceso de compilación.
+
+Las operaciones con datos y la llamada al modelo de IA pasan por funciones
+serverless del propio repositorio:
+
+- `api/listar-eventos.mjs`
+- `api/crear-evento.mjs`
+- `api/obtener-evento.mjs`
+- `api/crear-actividad.mjs`
+- `api/confirmar-agenda.mjs`
+- `api/chat-agendapro.mjs`
+
+Supabase almacena los eventos y las actividades. El navegador no accede
+directamente con credenciales privilegiadas.
+
+El chatbot usa Google Gemini desde el backend y recibe una base de conocimiento
+curada de AgendaPro. Está disponible como widget de ayuda en las pantallas
+públicas y no utiliza búsqueda web, memoria persistente ni acceso a Supabase.
+
+## Variables de entorno
+
+Las claves secretas se configuran únicamente como variables de entorno del
+servidor en Vercel:
+
+- `SUPABASE_SERVICE_KEY`
+- `GEMINI_API_KEY`
+
+Sus valores no deben incluirse en los archivos HTML, el JavaScript del
+navegador, el repositorio ni las respuestas de las funciones.
+
+## Pantallas
+
+- `index.html`: Mis eventos.
+- `crear-evento.html`: creación de eventos.
+- `detalle-evento.html`: detalle, actividades y revisión de agenda.
+- `confirmacion.html`: resultado de la confirmación.
+
+## Datos y estados
+
+Las actividades pertenecen a un evento mediante `actividades.evento_id`. Los
+estados reconocidos son `Borrador`, `Confirmada`, `Publicada` y `Finalizada`.
+El flujo público actual confirma la agenda con el estado `Confirmada`.
+
+## Limitaciones actuales
+
+- No hay autenticación ni cuentas de usuario.
+- No hay pagos.
+- No hay integración operativa con Google Calendar.
+- No se pueden editar ni eliminar actividades desde la interfaz pública.
+- No existe un panel administrativo público.
+- No existe una acción pública para cambiar manualmente una agenda a
+  `Publicada` o `Finalizada`.
 
 ## Documentación
 
 - [Requisitos del producto](docs/PRD.md)
 - [Requisitos funcionales](docs/FRD.md)
-- [Brand brief](docs/BRAND.md)
-
-## Prototipo en vivo
-
-Dirección de Vercel:
-
-https://agendapro-mo3r2u04z-mcarranza21s-projects.vercel.app/
-
-## Pantallas implementadas
-
-- **Inicio (`index.html`):** presenta los eventos disponibles y enlaza al detalle y al formulario.
-- **Detalle del evento (`detalle-evento.html`):** muestra información general, conserva las actividades agregadas en el navegador y permite volver a Inicio.
-- **Crear evento (`crear-evento.html`):** formulario accesible desde Inicio que guarda una fila en la tabla `eventos` de Supabase.
-
-## Delivery 3
-
-- Interfaz construida con HTML, CSS y JavaScript simples.
-- Bootstrap 5, Bootstrap Icons, Montserrat e Inter cargados desde CDN.
-- Imagen y favicon almacenados localmente en `assets/`.
-- Datos de ejemplo leídos desde `data/EVENTS.json`.
-- Formulario conectado a una única tabla de Supabase.
-- Actividades del detalle guardadas por evento en `localStorage`, por lo que permanecen después de recargar en el mismo navegador.
-
-Antes de entregar: abrir la URL de Vercel en una ventana privada para confirmar que no solicita inicio de sesión y comprobar que el instructor conserva acceso al repositorio. El resumen PDF ya incluye evidencia de Supabase con filas registradas y la fecha visible.
+- [Flujo de navegación](docs/FLOW.md)
+- [Identidad de marca](docs/BRAND.md)

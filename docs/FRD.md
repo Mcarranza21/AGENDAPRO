@@ -1,145 +1,223 @@
-# Documento de Requisitos Funcionales (FRD)
+# AgendaPro — Documento de Requisitos Funcionales
 
-## Funcionalidad: Crear y gestionar una agenda de eventos
+## Alcance actual
 
----
+AgendaPro permite crear eventos, asociarles actividades, revisar su agenda y
+confirmarla. La información se almacena en Supabase mediante funciones
+serverless. El producto incluye además un chatbot grounded que responde sobre
+las funciones reales de AgendaPro.
 
-# Pantalla 1 – Inicio
-**Estado de implementación:** Implementada
+## 1. Mis eventos
 
-## Propósito
-Permitir al usuario crear un nuevo evento o acceder a uno existente.
+### Objetivo
 
-### Lo que el usuario ve
-- Botón **"Crear nuevo evento"**.
-- Lista de eventos existentes (si los hay).
+Servir como entrada al producto y permitir crear un evento o continuar con uno
+existente.
 
-### Lo que el usuario hace
-- Selecciona **"Crear nuevo evento"** o un evento existente.
+### Datos mostrados
 
-### Datos de entrada
-- Selección del botón o del evento.
-
-### Datos de salida
-- Se abre la pantalla de detalles del evento.
-- Se muestra la información del evento seleccionado.
-
----
-
-# Pantalla 2 – Detalle del Evento
-**Estado de implementación:** Implementada
-
-## Propósito
-Permitir al usuario consultar la información general de un evento y administrar las actividades que forman parte de su agenda.
-
-### Lo que el usuario ve
 - Nombre del evento.
-- Estado del evento.
 - Fecha.
-- Horario general.
 - Lugar.
-- Sección de actividades de la agenda.
-- Botón **"Agregar actividad"**.
-- Opción **"Volver a eventos"**.
-- Mensaje informativo cuando el evento todavía no tiene actividades.
-
-### Lo que el usuario hace
-- Consulta la información general del evento.
-- Revisa las actividades que forman parte de la agenda.
-- Selecciona **"Agregar actividad"** para incorporar una nueva actividad.
-- Selecciona **"Volver a eventos"** para regresar a la pantalla de Inicio.
-
-### Datos de entrada
-- Evento seleccionado desde la pantalla de Inicio.
-- Información de una nueva actividad cuando el usuario decide agregarla.
-
-### Datos de salida
-- Se muestra la información correspondiente al evento seleccionado.
-- Se muestran las actividades asociadas al evento.
-- Si el evento no tiene actividades, se muestra el mensaje:
-  > Este evento todavía no tiene actividades. Agrega la primera actividad para comenzar a organizar la agenda.
-- Al agregar una actividad, esta se incorpora a la agenda mostrada.
-- Al seleccionar **"Volver a eventos"**, el usuario regresa a la pantalla de Inicio.
-
----
-
-# Pantalla 3 – Constructor de Agenda
-**Estado de implementación:** No implementada
-
-## Propósito
-Crear y administrar las actividades del evento.
-
-### Lo que el usuario ve
-- Lista de actividades.
-- Botón **Agregar actividad**.
-- Opciones para editar y eliminar.
-
-### Lo que el usuario hace
-- Agrega, edita o elimina actividades.
-
-### Datos de entrada
-- Hora.
-- Descripción de la actividad.
 - Responsable.
+- Estado; cuando no existe un valor persistido, se presenta visualmente como
+  `Borrador`.
 
-### Datos de salida
-- La agenda se actualiza en orden cronológico.
-- Las actividades quedan almacenadas.
+### Acciones
 
----
+- Abrir `crear-evento.html`.
+- Seleccionar un evento y abrir `detalle-evento.html?id=<id>` con su ID real.
+- Abrir el chatbot de ayuda.
 
-# Pantalla 4 – Sincronización con Google Calendar
-**Estado de implementación:** No implementada
+### Backend
 
-## Propósito
-Permitir al usuario publicar la agenda del evento y sincronizarla con Google Calendar.
+- `GET /api/listar-eventos`
 
-### Lo que el usuario ve
-- Vista previa de la agenda.
-- Botón **"Sincronizar con Google Calendar"**.
-- Mensaje de confirmación cuando la sincronización sea exitosa.
+### Estados y errores
 
-### Lo que el usuario hace
-- Revisa la agenda.
-- Selecciona **"Sincronizar con Google Calendar"**.
-- Autoriza el acceso a su cuenta de Google (la primera vez).
+- Mientras carga se muestra “Cargando eventos…”.
+- Si no hay eventos, se ofrece crear el primero.
+- Si falla la consulta, se muestra un error amigable sin detalles de Supabase.
 
-### Datos de entrada
-- Agenda del evento.
-- Cuenta de Google autorizada por el usuario.
+## 2. Crear evento
 
-### Datos de salida
-- La agenda queda publicada en Google Calendar.
-- Se muestra un mensaje confirmando que la sincronización fue realizada correctamente.
+### Objetivo
 
----
+Registrar un evento nuevo y continuar inmediatamente con la construcción de su
+agenda.
 
-# Casos límite (Edge Cases)
+### Datos solicitados
 
-## 1. No hay conexión a Internet
+- Nombre del evento.
+- Fecha.
+- Lugar.
+- Nombre del responsable.
+- Teléfono del responsable.
 
-**Respuesta del sistema:**
-La sincronización se cancela.
+### Acciones
 
-**Mensaje al usuario:**
-> No fue posible sincronizar la agenda. Verifique su conexión a Internet e intente nuevamente.
+- Enviar el formulario.
+- Volver a Mis eventos.
+- Abrir el chatbot de ayuda.
 
----
+### Backend
 
-## 2. Permisos denegados
+- `POST /api/crear-evento`
 
-**Respuesta del sistema:**
-No se puede acceder a Google Calendar.
+El backend inserta el evento en Supabase y devuelve su representación, incluido
+el ID generado. El navegador valida ese ID y redirige a
+`detalle-evento.html?id=<id-real>`.
 
-**Mensaje al usuario:**
-> Debe autorizar el acceso a Google Calendar para sincronizar la agenda.
+### Estados y errores
 
----
+- El botón se deshabilita y muestra “Creando evento…” durante el envío.
+- Se evitan envíos duplicados.
+- Si la creación falla o la respuesta no incluye un ID válido, no se redirige y
+  se muestra un mensaje amigable.
 
-## 3. Error al conectar con Google Calendar
+## 3. Detalle y revisión del evento
 
-**Respuesta del sistema:**
-La agenda no se publica.
+### Objetivo
 
-**Mensaje al usuario:**
-> Ocurrió un error durante la sincronización. Intente nuevamente más tarde.
+Mostrar la información real del evento, administrar la incorporación de
+actividades y permitir revisar la agenda antes de confirmarla.
+
+### Datos mostrados
+
+- Nombre, fecha y lugar del evento.
+- Nombre y teléfono del responsable.
+- Estado y folio, cuando existen.
+- Actividades asociadas, ordenadas por hora.
+- Hora, descripción y responsable de cada actividad.
+
+### Acciones
+
+- Agregar una actividad.
+- Confirmar una agenda que tenga al menos una actividad.
+- Volver a Mis eventos.
+- Abrir el chatbot de ayuda.
+
+### Backend
+
+- `GET /api/obtener-evento?id=<id>` obtiene el evento y sus actividades.
+- `POST /api/crear-actividad` guarda una actividad asociada mediante
+  `evento_id`.
+- `POST /api/confirmar-agenda` confirma la agenda.
+
+### Estados y errores
+
+- Se distinguen ID inválido, evento inexistente y error de consulta.
+- Una agenda sin actividades muestra su estado vacío y mantiene deshabilitada
+  la confirmación.
+- Durante el alta de una actividad o la confirmación, el botón correspondiente
+  queda deshabilitado para evitar dobles envíos.
+- Los errores se presentan sin datos internos de Supabase.
+- Si el evento ya tiene folio y estado `Confirmada`, ambos se muestran y el
+  botón indica “Agenda confirmada” sin repetir automáticamente la operación.
+
+## 4. Confirmación
+
+### Objetivo
+
+Mostrar el resultado de una confirmación completada.
+
+### Flujo transaccional
+
+```text
+detalle-evento.html
+→ POST /api/confirmar-agenda
+→ actualización del evento en Supabase
+→ respuesta con folio, estado y resumen
+→ almacenamiento temporal de esa respuesta en sessionStorage
+→ confirmacion.html
+```
+
+El backend comprueba que el evento exista y tenga al menos una actividad. Al
+confirmar, guarda un folio único, el estado `Confirmada` y la fecha/hora de
+confirmación. Si el evento ya estaba confirmado, devuelve la confirmación
+existente sin generar otro folio.
+
+### Datos mostrados
+
+- Mensaje de éxito.
+- Folio.
+- Estado.
+- Nombre, fecha, lugar y responsable del evento.
+- Número de actividades.
+- Fecha y hora de confirmación.
+
+### Acciones
+
+- Volver a Mis eventos.
+- Volver al detalle del evento.
+- Abrir el chatbot de ayuda.
+
+### Fuente de los datos
+
+`confirmacion.html` muestra exclusivamente la respuesta recibida de
+`POST /api/confirmar-agenda`, transferida mediante `sessionStorage`. La pantalla
+no vuelve a consultar Supabase ni llama a un endpoint para buscar el folio o el
+estado.
+
+### Estados y errores
+
+- Si no existe una confirmación en la sesión, se muestra “No hay una
+  confirmación disponible” y un enlace a Mis eventos.
+
+## 5. Chatbot de ayuda
+
+### Objetivo
+
+Ayudar al usuario a entender las funciones disponibles de AgendaPro sin
+presentar capacidades inexistentes.
+
+### Datos mostrados
+
+- Mensaje inicial.
+- Preguntas sugeridas.
+- Preguntas realizadas durante la página actual.
+- Respuestas breves y grounded en la base curada de AgendaPro.
+
+### Acciones
+
+- Abrir y cerrar el widget.
+- Seleccionar una pregunta sugerida.
+- Escribir y enviar una pregunta.
+- Enviar con Enter.
+
+### Backend
+
+- `POST /api/chat-agendapro`
+
+El navegador envía únicamente la pregunta. La función serverless agrega las
+instrucciones y la base curada, y llama a Gemini con una clave disponible solo
+en el servidor.
+
+### Estados y errores
+
+- Durante la respuesta se muestra “Pensando…” y se bloquean envíos duplicados.
+- Ante un error se muestra un mensaje amigable sin información del proveedor.
+- El historial solo existe mientras permanece abierta la página; no se guarda
+  en Supabase ni entre dispositivos.
+- Si la base no contiene la respuesta, el asistente indica que no tiene esa
+  información para la versión actual.
+
+## Estados reconocidos
+
+| Estado | Uso actual |
+|---|---|
+| `Borrador` | Representación visual de un evento todavía no confirmado. |
+| `Confirmada` | Agenda confirmada con folio y fecha/hora de confirmación. |
+| `Publicada` | Estado reconocido, sin acción pública actual para asignarlo. |
+| `Finalizada` | Estado reconocido, sin acción pública actual para asignarlo. |
+
+El flujo público de confirmación deja la agenda en estado `Confirmada`.
+
+## Fuera del alcance actual
+
+- Autenticación y cuentas.
+- Pagos.
+- Integración operativa con Google Calendar.
+- Edición y eliminación de actividades.
+- Panel administrativo público.
+- Cambio público manual a `Publicada` o `Finalizada`.
