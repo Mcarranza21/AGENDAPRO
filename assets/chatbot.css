@@ -1,0 +1,211 @@
+.ap-chat-launcher {
+  position: fixed;
+  z-index: 1080;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: #087e8b;
+  box-shadow: 0 0.65rem 1.8rem rgba(22, 50, 79, 0.22);
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  padding: 0.8rem 1.05rem;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.ap-chat-launcher:hover {
+  transform: translateY(-2px);
+  background: #066d78;
+}
+
+.ap-chat-launcher:focus-visible,
+.ap-chat-close:focus-visible,
+.ap-chat-suggestion:focus-visible,
+.ap-chat-send:focus-visible,
+.ap-chat-input:focus-visible {
+  outline: 3px solid rgba(8, 126, 139, 0.3);
+  outline-offset: 2px;
+}
+
+.ap-chat-panel {
+  position: fixed;
+  z-index: 1081;
+  right: 1.25rem;
+  bottom: 5.25rem;
+  display: flex;
+  width: min(25rem, calc(100vw - 2rem));
+  max-height: min(39rem, calc(100vh - 7rem));
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid #dce5ee;
+  border-radius: 1.15rem;
+  background: #fff;
+  box-shadow: 0 1.2rem 3rem rgba(22, 50, 79, 0.2);
+  color: #16324f;
+  font-family: "Inter", sans-serif;
+}
+
+.ap-chat-panel[hidden] { display: none; }
+
+.ap-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  background: #16324f;
+  color: #fff;
+}
+
+.ap-chat-title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ap-chat-subtitle {
+  margin: 0.2rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.75rem;
+}
+
+.ap-chat-close {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.ap-chat-messages {
+  min-height: 12rem;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #f7f9fc;
+  scroll-behavior: smooth;
+}
+
+.ap-chat-message {
+  width: fit-content;
+  max-width: 88%;
+  margin-bottom: 0.75rem;
+  border-radius: 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  padding: 0.7rem 0.85rem;
+  white-space: pre-wrap;
+}
+
+.ap-chat-message-assistant {
+  border: 1px solid #dce5ee;
+  border-bottom-left-radius: 0.25rem;
+  background: #fff;
+  color: #16324f;
+}
+
+.ap-chat-message-user {
+  margin-left: auto;
+  border-bottom-right-radius: 0.25rem;
+  background: #087e8b;
+  color: #fff;
+}
+
+.ap-chat-message-thinking {
+  color: #64748b;
+  font-style: italic;
+}
+
+.ap-chat-suggestions {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #dce5ee;
+  background: #fff;
+}
+
+.ap-chat-suggestion {
+  flex: 0 0 auto;
+  border: 1px solid rgba(8, 126, 139, 0.35);
+  border-radius: 999px;
+  background: rgba(8, 126, 139, 0.07);
+  color: #066d78;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.42rem 0.65rem;
+}
+
+.ap-chat-suggestion:hover { background: rgba(8, 126, 139, 0.14); }
+
+.ap-chat-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid #dce5ee;
+  background: #fff;
+}
+
+.ap-chat-input {
+  min-height: 2.65rem;
+  max-height: 7rem;
+  flex: 1;
+  resize: vertical;
+  border: 1px solid #b8c7d6;
+  border-radius: 0.75rem;
+  color: #16324f;
+  font: inherit;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  padding: 0.65rem 0.75rem;
+}
+
+.ap-chat-send {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 0.75rem;
+  background: #087e8b;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.ap-chat-send:disabled,
+.ap-chat-input:disabled,
+.ap-chat-suggestion:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+@media (max-width: 575.98px) {
+  .ap-chat-launcher {
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .ap-chat-panel {
+    right: 0.75rem;
+    bottom: 4.9rem;
+    width: calc(100vw - 1.5rem);
+    max-height: calc(100dvh - 6rem);
+  }
+
+  .ap-chat-messages { min-height: 10rem; }
+}
