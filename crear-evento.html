@@ -305,16 +305,34 @@
     const eventForm = document.querySelector('#eventForm');
     const submitButton = document.querySelector('#submitButton');
     const formMessage = document.querySelector('#formMessage');
+    let creationInProgress = false;
 
     function showMessage(message, type) {
       formMessage.textContent = message;
       formMessage.className = `alert alert-${type}`;
     }
 
+    function getRealEventId(result) {
+      const value = result?.event?.id;
+
+      if (typeof value === 'number') {
+        return Number.isSafeInteger(value) && value > 0 ? String(value) : null;
+      }
+
+      if (typeof value === 'string' && /^[1-9]\d*$/.test(value.trim())) {
+        return value.trim();
+      }
+
+      return null;
+    }
+
     eventForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (creationInProgress) return;
+
+      creationInProgress = true;
       submitButton.disabled = true;
-      submitButton.textContent = 'Guardando…';
+      submitButton.textContent = 'Creando evento…';
       formMessage.classList.add('d-none');
 
       const formData = new FormData(eventForm);
@@ -334,20 +352,24 @@
           },
           body: JSON.stringify(newEvent)
         });
-        const result = await response.json();
+        const result = await response.json().catch(() => null);
 
         if (!response.ok) {
-          const errorMessage = typeof result.error === 'string'
-            ? result.error
-            : result.error?.message || 'No se pudo guardar el evento.';
-          throw new Error(errorMessage);
+          throw new Error('CREATE_FAILED');
         }
 
-        eventForm.reset();
-        showMessage('¡Gracias! Tu evento se guardó correctamente.', 'success');
+        const eventId = getRealEventId(result);
+        if (!eventId) {
+          throw new Error('MISSING_EVENT_ID');
+        }
+
+        window.location.assign(`./detalle-evento.html?id=${encodeURIComponent(eventId)}`);
       } catch (error) {
-        showMessage(error.message, 'danger');
-      } finally {
+        const message = error.message === 'MISSING_EVENT_ID'
+          ? 'El evento se creó, pero no pudimos abrirlo. Vuelve a Mis eventos e intenta seleccionarlo.'
+          : 'No pudimos crear el evento. Revisa la información e intenta nuevamente.';
+        showMessage(message, 'danger');
+        creationInProgress = false;
         submitButton.disabled = false;
         submitButton.innerHTML = '<i class="bi bi-cloud-arrow-up me-2" aria-hidden="true"></i>Guardar evento';
       }

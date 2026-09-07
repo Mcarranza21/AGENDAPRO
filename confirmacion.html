@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Confirmación de agenda en AgendaPro.">
+  <title>Agenda confirmada | AgendaPro</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --ap-primary: #16324f;
+      --ap-accent: #087e8b;
+      --ap-background: #f7f9fc;
+      --ap-surface: #ffffff;
+      --ap-muted: #64748b;
+      --ap-border: #dce5ee;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--ap-background);
+      color: var(--ap-primary);
+      font-family: "Inter", sans-serif;
+    }
+
+    h1, h2, .navbar-brand { font-family: "Montserrat", sans-serif; }
+
+    .navbar {
+      background: rgba(247, 249, 252, 0.94);
+      border-bottom: 1px solid rgba(22, 50, 79, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 2.25rem;
+      height: 2.25rem;
+      place-items: center;
+      border-radius: 0.7rem;
+      background: var(--ap-primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .confirmation-card {
+      max-width: 860px;
+      margin-inline: auto;
+      border: 1px solid var(--ap-border);
+      border-radius: 1.25rem;
+      background: var(--ap-surface);
+      box-shadow: 0 0.8rem 2.5rem rgba(22, 50, 79, 0.08);
+    }
+
+    .success-icon {
+      display: grid;
+      width: 4rem;
+      height: 4rem;
+      margin-inline: auto;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(8, 126, 139, 0.12);
+      color: var(--ap-accent);
+      font-size: 2rem;
+    }
+
+    .eyebrow, .info-label {
+      color: var(--ap-accent);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .folio-panel {
+      border-radius: 1rem;
+      background: var(--ap-primary);
+      color: #fff;
+    }
+
+    .folio-value {
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(1.65rem, 5vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.035em;
+    }
+
+    .status-value {
+      display: inline-block;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .event-details {
+      border: 1px solid var(--ap-border);
+      border-radius: 1rem;
+    }
+
+    .info-value { font-weight: 600; }
+    .text-muted-ap { color: var(--ap-muted); }
+
+    .btn-accent {
+      --bs-btn-color: #fff;
+      --bs-btn-bg: var(--ap-accent);
+      --bs-btn-border-color: var(--ap-accent);
+      --bs-btn-hover-color: #fff;
+      --bs-btn-hover-bg: #066d78;
+      --bs-btn-hover-border-color: #066d78;
+      --bs-btn-focus-shadow-rgb: 8, 126, 139;
+      font-weight: 700;
+    }
+
+    footer {
+      color: var(--ap-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body class="d-flex flex-column">
+  <nav class="navbar navbar-expand py-3" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="./index.html" aria-label="AgendaPro, inicio">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="fw-bold" style="color: var(--ap-primary);">Agenda<span style="color: var(--ap-accent);">Pro</span></span>
+      </a>
+      <span class="d-none d-sm-inline text-secondary small">Organiza con claridad</span>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1 py-4 py-md-5">
+    <div class="container">
+      <section class="confirmation-card p-4 p-md-5 d-none" id="confirmationContent" aria-live="polite">
+        <header class="text-center mb-4">
+          <div class="success-icon mb-3" aria-hidden="true"><i class="bi bi-check-lg"></i></div>
+          <p class="eyebrow mb-2">Proceso completado</p>
+          <h1 class="h2 mb-2">Agenda confirmada correctamente</h1>
+          <p class="text-muted-ap mb-0">Tu agenda quedó registrada y lista para continuar.</p>
+        </header>
+
+        <div class="folio-panel p-4 p-md-5 text-center mb-4">
+          <p class="info-label text-white-50 mb-2">Folio</p>
+          <p class="folio-value mb-4" id="confirmationFolio">—</p>
+          <p class="info-label text-white-50 mb-2">Estado</p>
+          <p class="status-value px-3 py-2 mb-0" id="confirmationState">—</p>
+        </div>
+
+        <section class="event-details p-4 mb-4" aria-labelledby="eventDetailsTitle">
+          <h2 class="h5 mb-4" id="eventDetailsTitle">Resumen del evento</h2>
+          <div class="row g-4">
+            <div class="col-12">
+              <p class="info-label mb-1">Evento</p>
+              <p class="info-value mb-0" id="eventName">—</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="info-label mb-1">Fecha</p>
+              <p class="info-value mb-0" id="eventDate">—</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="info-label mb-1">Lugar</p>
+              <p class="info-value mb-0" id="eventLocation">—</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="info-label mb-1">Responsable</p>
+              <p class="info-value mb-0" id="eventOwner">—</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="info-label mb-1">Actividades</p>
+              <p class="info-value mb-0" id="activityCount">—</p>
+            </div>
+            <div class="col-12">
+              <p class="info-label mb-1">Confirmada el</p>
+              <p class="info-value mb-0" id="confirmedAt">—</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+          <a class="btn btn-accent rounded-3 px-4" href="./index.html">Volver a Mis eventos</a>
+          <a class="btn btn-outline-secondary rounded-3 px-4" id="viewEventButton" href="./index.html">Ver evento</a>
+        </div>
+      </section>
+
+      <section class="confirmation-card p-4 p-md-5 text-center d-none" id="emptyConfirmation" aria-live="polite">
+        <div class="success-icon mb-3" aria-hidden="true"><i class="bi bi-info-lg"></i></div>
+        <h1 class="h3 mb-2">No hay una confirmación disponible</h1>
+        <p class="text-muted-ap mb-4">Confirma una agenda desde el detalle de un evento para consultar su resultado.</p>
+        <a class="btn btn-accent rounded-3 px-4" href="./index.html">Volver a Mis eventos</a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="py-4 border-top">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between gap-2">
+      <span>AgendaPro · Planificación de eventos</span>
+      <span>Agendas precisas, equipos coordinados.</span>
+    </div>
+  </footer>
+
+  <script>
+    const storageKey = 'agendapro.confirmacion';
+    const confirmationContent = document.querySelector('#confirmationContent');
+    const emptyConfirmation = document.querySelector('#emptyConfirmation');
+    const dateFormatter = new Intl.DateTimeFormat('es-GT', {
+      day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+    });
+    const dateTimeFormatter = new Intl.DateTimeFormat('es-GT', {
+      dateStyle: 'long', timeStyle: 'short'
+    });
+
+    function showEmptyState() {
+      confirmationContent.classList.add('d-none');
+      emptyConfirmation.classList.remove('d-none');
+    }
+
+    function readConfirmation() {
+      try {
+        const value = JSON.parse(sessionStorage.getItem(storageKey));
+        return value && typeof value === 'object' ? value : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function renderConfirmation(data) {
+      if (!data.event_id || !data.folio || !data.estado) {
+        showEmptyState();
+        return;
+      }
+
+      const eventDate = new Date(`${data.fecha_evento}T00:00:00Z`);
+      const confirmedDate = new Date(data.confirmado_en);
+
+      document.querySelector('#confirmationFolio').textContent = data.folio;
+      document.querySelector('#confirmationState').textContent = data.estado;
+      document.querySelector('#eventName').textContent = data.nombre_evento || 'Sin nombre';
+      document.querySelector('#eventDate').textContent = Number.isNaN(eventDate.getTime())
+        ? 'Por definir'
+        : dateFormatter.format(eventDate);
+      document.querySelector('#eventLocation').textContent = data.lugar_evento || 'Por definir';
+      document.querySelector('#eventOwner').textContent = data.nombre_responsable || 'Por definir';
+      document.querySelector('#activityCount').textContent = String(data.numero_actividades ?? 0);
+      document.querySelector('#confirmedAt').textContent = Number.isNaN(confirmedDate.getTime())
+        ? 'Por definir'
+        : dateTimeFormatter.format(confirmedDate);
+      document.querySelector('#viewEventButton').href = `./detalle-evento.html?id=${encodeURIComponent(data.event_id)}`;
+
+      emptyConfirmation.classList.add('d-none');
+      confirmationContent.classList.remove('d-none');
+    }
+
+    const confirmation = readConfirmation();
+    if (confirmation) {
+      renderConfirmation(confirmation);
+    } else {
+      showEmptyState();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

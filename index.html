@@ -257,7 +257,10 @@
 
         <div class="empty-state p-4 p-md-5 text-center d-none" id="emptyState">
           <h3 class="h5 mb-2">Todavía no tienes eventos</h3>
-          <p class="text-secondary mb-0">Crea tu primer evento para comenzar.</p>
+          <p class="text-secondary mb-3">Crea tu primer evento para comenzar.</p>
+          <a class="btn btn-accent rounded-3" href="./crear-evento.html" id="emptyStateAction">
+            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Crear nuevo evento
+          </a>
         </div>
       </div>
     </section>
@@ -299,7 +302,9 @@
     }
 
     function createEventCard(event) {
-      const date = new Date(`${event.fecha}T00:00:00Z`);
+      const date = new Date(`${event.fecha_evento}T00:00:00Z`);
+      const hasValidDate = !Number.isNaN(date.getTime());
+      const visualStatus = event.estado || 'Borrador';
       const column = document.createElement('div');
       column.className = 'col-12 col-md-6 col-xl-4';
 
@@ -312,19 +317,19 @@
       const dateBlock = document.createElement('div');
       dateBlock.className = 'event-date p-2';
       const day = document.createElement('strong');
-      day.textContent = String(date.getUTCDate()).padStart(2, '0');
+      day.textContent = hasValidDate ? String(date.getUTCDate()).padStart(2, '0') : '—';
       const month = document.createElement('span');
-      month.textContent = monthFormatter.format(date).replace('.', '');
+      month.textContent = hasValidDate ? monthFormatter.format(date).replace('.', '') : 'Fecha';
       dateBlock.append(day, month);
 
       const summary = document.createElement('div');
       summary.className = 'flex-grow-1';
       const status = document.createElement('span');
-      status.className = `status-badge d-inline-block px-2 py-1 mb-2${event.estado === 'En curso' ? ' active' : ''}`;
-      status.textContent = event.estado;
+      status.className = `status-badge d-inline-block px-2 py-1 mb-2${visualStatus === 'Confirmada' ? ' active' : ''}`;
+      status.textContent = visualStatus;
       const title = document.createElement('h3');
       title.className = 'event-title mb-0';
-      title.textContent = event.nombreEvento;
+      title.textContent = event.nombre_evento;
       summary.append(status, title);
       top.append(dateBlock, summary);
 
@@ -335,19 +340,25 @@
       const calendarIcon = document.createElement('i');
       calendarIcon.className = 'bi bi-calendar3 me-2';
       calendarIcon.setAttribute('aria-hidden', 'true');
-      fullDate.append(calendarIcon, longDateFormatter.format(date));
+      fullDate.append(calendarIcon, hasValidDate ? longDateFormatter.format(date) : 'Fecha por definir');
       const location = document.createElement('p');
-      location.className = 'mb-3';
+      location.className = 'mb-2';
       const locationIcon = document.createElement('i');
       locationIcon.className = 'bi bi-geo-alt me-2';
       locationIcon.setAttribute('aria-hidden', 'true');
-      location.append(locationIcon, event.lugar);
+      location.append(locationIcon, event.lugar_evento || 'Lugar por definir');
+      const owner = document.createElement('p');
+      owner.className = 'mb-3';
+      const ownerIcon = document.createElement('i');
+      ownerIcon.className = 'bi bi-person me-2';
+      ownerIcon.setAttribute('aria-hidden', 'true');
+      owner.append(ownerIcon, event.nombre_responsable || 'Responsable por definir');
       const link = document.createElement('a');
       link.className = 'event-link';
       link.href = `./detalle-evento.html?id=${encodeURIComponent(event.id)}`;
       link.textContent = 'Ver evento →';
-      link.setAttribute('aria-label', `Ver evento: ${event.nombreEvento}`);
-      details.append(fullDate, location, link);
+      link.setAttribute('aria-label', `Ver evento: ${event.nombre_evento}`);
+      details.append(fullDate, location, owner, link);
 
       card.append(top, details);
       column.append(card);
@@ -356,9 +367,12 @@
 
     async function loadEvents() {
       try {
-        const response = await fetch('./data/EVENTS.json');
-        if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
-        const events = await response.json();
+        const response = await fetch('/api/listar-eventos');
+        const result = await response.json().catch(() => null);
+        if (!response.ok || !Array.isArray(result?.events)) {
+          throw new Error('Event listing failed');
+        }
+        const events = result.events;
 
         if (!Array.isArray(events) || events.length === 0) {
           emptyState.classList.remove('d-none');
@@ -366,15 +380,12 @@
           return;
         }
 
-        events
-          .slice()
-          .sort((a, b) => a.fecha.localeCompare(b.fecha))
-          .forEach(event => eventsList.append(createEventCard(event)));
+        events.forEach(event => eventsList.append(createEventCard(event)));
         eventCount.textContent = `${events.length} ${events.length === 1 ? 'evento' : 'eventos'}`;
       } catch (error) {
         emptyState.classList.remove('d-none');
         emptyState.querySelector('h3').textContent = 'No pudimos cargar tus eventos';
-        emptyState.querySelector('p').textContent = 'Intenta abrir AgendaPro desde un servidor local.';
+        emptyState.querySelector('p').textContent = 'Ocurrió un problema al consultar tus eventos. Intenta nuevamente.';
         eventCount.textContent = 'Eventos no disponibles';
       } finally {
         eventsList.setAttribute('aria-busy', 'false');

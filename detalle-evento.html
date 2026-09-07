@@ -88,7 +88,7 @@
       color: var(--ap-accent);
     }
 
-    .info-card, .agenda-card {
+    .info-card, .agenda-card, .confirmation-card {
       border: 1px solid var(--ap-border);
       border-radius: 1rem;
       background: var(--ap-surface);
@@ -177,17 +177,36 @@
 
         <section class="info-card p-4 mb-4" aria-label="Información general del evento">
           <div class="row g-4">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
               <p class="info-label mb-1">Fecha</p>
               <p class="info-value mb-0" id="eventDate">—</p>
             </div>
-            <div class="col-12 col-md-4">
-              <p class="info-label mb-1">Horario general</p>
-              <p class="info-value mb-0" id="eventSchedule">Por definir</p>
-            </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
               <p class="info-label mb-1">Lugar</p>
               <p class="info-value mb-0" id="eventLocation">—</p>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <p class="info-label mb-1">Responsable</p>
+              <p class="info-value mb-0" id="eventOwner">—</p>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <p class="info-label mb-1">Teléfono</p>
+              <p class="info-value mb-0" id="eventPhone">—</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="confirmation-card p-4 mb-4 d-none" id="existingConfirmation" aria-labelledby="confirmationInfoTitle">
+          <p class="eyebrow mb-2">Agenda confirmada</p>
+          <h2 class="h5 mb-3" id="confirmationInfoTitle">Esta agenda ya fue confirmada</h2>
+          <div class="d-flex flex-column flex-sm-row gap-3 gap-sm-5">
+            <div>
+              <p class="info-label mb-1">Folio</p>
+              <p class="info-value mb-0" id="eventFolio">—</p>
+            </div>
+            <div>
+              <p class="info-label mb-1">Estado</p>
+              <p class="info-value mb-0" id="confirmationStatus">—</p>
             </div>
           </div>
         </section>
@@ -198,20 +217,32 @@
               <p class="eyebrow mb-2">Agenda</p>
               <h2 class="section-title mb-0" id="agendaTitle">Actividades</h2>
             </div>
-            <button class="btn btn-accent rounded-3 d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="modal" data-bs-target="#activityModal"><i class="bi bi-plus-circle" aria-hidden="true"></i> Agregar actividad</button>
+            <button class="btn btn-accent rounded-3 d-inline-flex align-items-center gap-2" id="addActivityButton" type="button" data-bs-toggle="modal" data-bs-target="#activityModal" disabled><i class="bi bi-plus-circle" aria-hidden="true"></i> Agregar actividad</button>
           </div>
 
           <div id="activitiesList"></div>
           <div class="empty-state p-4 text-center" id="activitiesEmpty">
-            <h3 class="h5 mb-2">Este evento todavía no tiene actividades</h3>
+            <h3 class="h5 mb-2">Todavía no hay actividades en esta agenda</h3>
             <p class="text-secondary mb-0">Agrega la primera actividad para comenzar a organizar la agenda.</p>
           </div>
+        </section>
+
+        <section class="confirmation-card p-4 mt-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3" aria-labelledby="confirmAgendaTitle">
+          <div>
+            <p class="eyebrow mb-2">Revisión final</p>
+            <h2 class="h5 mb-1" id="confirmAgendaTitle">¿La agenda está lista?</h2>
+            <p class="text-secondary mb-0" id="confirmAgendaHelp">Agrega al menos una actividad para poder confirmarla.</p>
+            <div class="alert alert-danger mt-3 mb-0 d-none" id="confirmationError" role="alert"></div>
+          </div>
+          <button class="btn btn-accent rounded-3 flex-shrink-0" id="confirmAgendaButton" type="button" disabled>
+            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>Confirmar agenda
+          </button>
         </section>
       </div>
 
       <section class="empty-state p-4 p-md-5 text-center d-none" id="eventError" aria-live="polite">
-        <h1 class="h4 mb-2">No encontramos este evento</h1>
-        <p class="text-secondary mb-3">Vuelve a la lista y selecciona un evento existente.</p>
+        <h1 class="h4 mb-2" id="eventErrorTitle">No encontramos este evento</h1>
+        <p class="text-secondary mb-3" id="eventErrorMessage">Vuelve a la lista y selecciona un evento existente.</p>
         <a class="back-link" href="./index.html">Volver a eventos</a>
       </section>
     </div>
@@ -248,10 +279,11 @@
               <label class="form-label fw-semibold" for="activityOwner">Responsable</label>
               <input class="form-control" id="activityOwner" name="responsable" type="text" maxlength="80" required>
             </div>
+            <div class="alert alert-danger mt-3 mb-0 d-none" id="activitySaveError" role="alert"></div>
           </div>
           <div class="modal-footer border-0 px-4 pb-4 pt-2">
             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-accent rounded-3">Agregar actividad</button>
+            <button type="submit" class="btn btn-accent rounded-3" id="saveActivityButton">Agregar actividad</button>
           </div>
         </form>
       </div>
@@ -264,30 +296,40 @@
     const eventError = document.querySelector('#eventError');
     const activitiesList = document.querySelector('#activitiesList');
     const activitiesEmpty = document.querySelector('#activitiesEmpty');
+    const addActivityButton = document.querySelector('#addActivityButton');
+    const confirmAgendaButton = document.querySelector('#confirmAgendaButton');
+    const confirmAgendaHelp = document.querySelector('#confirmAgendaHelp');
+    const confirmationError = document.querySelector('#confirmationError');
+    const activityForm = document.querySelector('#activityForm');
+    const saveActivityButton = document.querySelector('#saveActivityButton');
+    const activitySaveError = document.querySelector('#activitySaveError');
     const eventId = new URLSearchParams(window.location.search).get('id');
-    const activitiesStorageKey = 'agendapro.activities.v1';
+    let currentActivities = [];
+    let isConfirmed = false;
+    let confirmationInProgress = false;
     const dateFormatter = new Intl.DateTimeFormat('es-GT', {
       day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
     });
 
-    function showEventError() {
+    function showEventError(title, message) {
       eventContent.classList.add('d-none');
       eventError.classList.remove('d-none');
+      document.querySelector('#eventErrorTitle').textContent = title;
+      document.querySelector('#eventErrorMessage').textContent = message;
     }
 
     function createActivityRow(activity) {
-      activitiesEmpty.classList.add('d-none');
       const row = document.createElement('article');
       row.className = 'activity-row d-flex flex-column flex-md-row gap-2 gap-md-4 py-3';
 
       const time = document.createElement('p');
       time.className = 'activity-time mb-0';
-      time.textContent = activity.hora;
+      time.textContent = activity.hora?.slice(0, 5) || '—';
 
       const body = document.createElement('div');
       const title = document.createElement('h3');
       title.className = 'h6 mb-1';
-      title.textContent = activity.descripcion;
+      title.textContent = activity.descripcion_actividad;
       const owner = document.createElement('p');
       owner.className = 'activity-owner mb-0';
       owner.textContent = `Responsable: ${activity.responsable}`;
@@ -296,79 +338,164 @@
       activitiesList.append(row);
     }
 
-    function renderActivities(activities) {
-      if (!Array.isArray(activities) || activities.length === 0) return;
-      activities.forEach(createActivityRow);
-    }
-
-    function getSavedActivities() {
-      try {
-        const savedByEvent = JSON.parse(localStorage.getItem(activitiesStorageKey)) || {};
-        return Array.isArray(savedByEvent[eventId]) ? savedByEvent[eventId] : [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function saveActivity(activity) {
-      let savedByEvent = {};
-      try {
-        savedByEvent = JSON.parse(localStorage.getItem(activitiesStorageKey)) || {};
-      } catch (error) {
-        savedByEvent = {};
+    function updateConfirmationButton() {
+      if (isConfirmed) {
+        confirmAgendaButton.disabled = true;
+        confirmAgendaButton.innerHTML = '<i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Agenda confirmada';
+        confirmAgendaHelp.textContent = 'Esta agenda ya cuenta con folio y confirmación.';
+        return;
       }
 
-      const currentActivities = Array.isArray(savedByEvent[eventId]) ? savedByEvent[eventId] : [];
-      savedByEvent[eventId] = [...currentActivities, activity];
-      localStorage.setItem(activitiesStorageKey, JSON.stringify(savedByEvent));
+      const hasActivities = currentActivities.length > 0;
+      confirmAgendaButton.disabled = !hasActivities;
+      confirmAgendaHelp.textContent = hasActivities
+        ? 'Revisa las actividades antes de confirmar la agenda.'
+        : 'Agrega al menos una actividad para poder confirmarla.';
+    }
+
+    function renderActivities() {
+      activitiesList.replaceChildren();
+      currentActivities.sort((a, b) => String(a.hora).localeCompare(String(b.hora)));
+      activitiesEmpty.classList.toggle('d-none', currentActivities.length > 0);
+      currentActivities.forEach(createActivityRow);
+      updateConfirmationButton();
     }
 
     async function loadEvent() {
-      if (!eventId) {
-        showEventError();
+      if (!eventId || !/^[1-9]\d*$/.test(eventId)) {
+        showEventError(
+          'El ID del evento no es válido',
+          'Vuelve a la lista y selecciona un evento existente.'
+        );
+        eventContent.setAttribute('aria-busy', 'false');
         return;
       }
 
       try {
-        const response = await fetch('./data/EVENTS.json');
-        if (!response.ok) throw new Error('No se pudieron cargar los eventos.');
-        const events = await response.json();
-        const event = events.find(item => String(item.id) === eventId);
-        if (!event) {
-          showEventError();
+        const response = await fetch(`/api/obtener-evento?id=${encodeURIComponent(eventId)}`);
+        const result = await response.json().catch(() => null);
+
+        if (response.status === 404) {
+          showEventError(
+            'No encontramos este evento',
+            'Vuelve a la lista y selecciona un evento existente.'
+          );
           return;
         }
+        if (!response.ok || !result?.event) throw new Error('Event request failed');
 
-        const date = new Date(`${event.fecha}T00:00:00Z`);
-        document.querySelector('#eventName').textContent = event.nombreEvento;
-        document.querySelector('#eventDate').textContent = dateFormatter.format(date);
-        document.querySelector('#eventLocation').textContent = event.lugar || 'Por definir';
-        document.querySelector('#eventSchedule').textContent = event.horarioGeneral || 'Por definir';
+        const event = result.event;
+        const date = new Date(`${event.fecha_evento}T00:00:00Z`);
+        document.querySelector('#eventName').textContent = event.nombre_evento;
+        document.querySelector('#eventDate').textContent = Number.isNaN(date.getTime())
+          ? 'Por definir'
+          : dateFormatter.format(date);
+        document.querySelector('#eventLocation').textContent = event.lugar_evento || 'Por definir';
+        document.querySelector('#eventOwner').textContent = event.nombre_responsable || 'Por definir';
+        document.querySelector('#eventPhone').textContent = event.telefono_responsable || 'Por definir';
 
         const status = document.querySelector('#eventStatus');
-        status.textContent = event.estado;
-        status.classList.remove('d-none');
-        if (event.estado === 'En curso') status.classList.add('active');
-        renderActivities([...(event.actividades || []), ...getSavedActivities()]);
+        if (event.estado) {
+          status.textContent = event.estado;
+          status.classList.remove('d-none');
+          status.classList.toggle('active', event.estado === 'Confirmada');
+        }
+
+        isConfirmed = Boolean(event.folio && event.estado === 'Confirmada');
+        if (isConfirmed) {
+          document.querySelector('#eventFolio').textContent = event.folio;
+          document.querySelector('#confirmationStatus').textContent = event.estado;
+          document.querySelector('#existingConfirmation').classList.remove('d-none');
+        }
+
+        currentActivities = Array.isArray(result.activities) ? result.activities : [];
+        renderActivities();
+        addActivityButton.disabled = false;
       } catch (error) {
-        showEventError();
+        showEventError(
+          'No pudimos cargar el evento',
+          'Ocurrió un problema al consultar la información. Intenta nuevamente.'
+        );
       } finally {
         eventContent.setAttribute('aria-busy', 'false');
       }
     }
 
-    document.querySelector('#activityForm').addEventListener('submit', event => {
+    activityForm.addEventListener('submit', async event => {
       event.preventDefault();
       const formData = new FormData(event.currentTarget);
       const activity = {
+        evento_id: eventId,
         hora: formData.get('hora'),
-        descripcion: formData.get('descripcion'),
+        descripcion_actividad: formData.get('descripcion'),
         responsable: formData.get('responsable')
       };
-      saveActivity(activity);
-      createActivityRow(activity);
-      bootstrap.Modal.getOrCreateInstance(document.querySelector('#activityModal')).hide();
-      event.currentTarget.reset();
+
+      saveActivityButton.disabled = true;
+      saveActivityButton.textContent = 'Guardando…';
+      activitySaveError.classList.add('d-none');
+
+      try {
+        const response = await fetch('/api/crear-actividad', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(activity)
+        });
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || !result?.activity) throw new Error('Activity request failed');
+
+        currentActivities.push(result.activity);
+        renderActivities();
+        bootstrap.Modal.getOrCreateInstance(document.querySelector('#activityModal')).hide();
+        event.currentTarget.reset();
+      } catch (error) {
+        activitySaveError.textContent = 'No pudimos guardar la actividad. Intenta nuevamente.';
+        activitySaveError.classList.remove('d-none');
+      } finally {
+        saveActivityButton.disabled = false;
+        saveActivityButton.textContent = 'Agregar actividad';
+      }
+    });
+
+    confirmAgendaButton.addEventListener('click', async () => {
+      if (confirmationInProgress || isConfirmed || currentActivities.length === 0) return;
+
+      confirmationInProgress = true;
+      confirmAgendaButton.disabled = true;
+      confirmAgendaButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Confirmando…';
+      confirmationError.classList.add('d-none');
+
+      try {
+        const response = await fetch('/api/confirmar-agenda', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_id: eventId })
+        });
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          if (response.status === 422) {
+            throw new Error('EMPTY_AGENDA');
+          }
+          throw new Error('CONFIRMATION_FAILED');
+        }
+
+        if (!result?.folio || !result?.estado) {
+          throw new Error('INVALID_CONFIRMATION');
+        }
+
+        sessionStorage.setItem('agendapro.confirmacion', JSON.stringify(result));
+        window.location.assign('./confirmacion.html');
+      } catch (error) {
+        confirmationError.textContent = error.message === 'EMPTY_AGENDA'
+          ? 'Agrega al menos una actividad antes de confirmar la agenda.'
+          : 'No pudimos confirmar la agenda. Intenta nuevamente.';
+        confirmationError.classList.remove('d-none');
+        confirmationInProgress = false;
+        confirmAgendaButton.innerHTML = '<i class="bi bi-check-circle me-2" aria-hidden="true"></i>Confirmar agenda';
+        updateConfirmationButton();
+      }
     });
 
     loadEvent();
